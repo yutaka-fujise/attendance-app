@@ -15,11 +15,12 @@ class CreateAttendanceCorrectionsTable extends Migration
     {
         Schema::create('attendance_corrections', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('attendance_id')->constrained()->onDelete('cascade');
-            $table->time('clock_in');
-            $table->time('clock_out');
+            $table->foreignId('attendance_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->time('clock_in')->nullable();
+            $table->time('clock_out')->nullable();
             $table->text('note');
-            $table->tinyInteger('status')->default(0);
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }

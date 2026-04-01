@@ -28,3 +28,19 @@ Route::middleware('auth')->group(function () {
     Route::post('/attendance/break-end', [AttendanceController::class, 'breakEnd'])->name('attendance.break_end');
     Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock_out');
 });
+
+Route::get('/attendance/list', [AttendanceController::class, 'list'])
+    ->middleware('auth')
+    ->name('attendance.list');
+
+Route::get('/attendance/{attendance}', [AttendanceController::class, 'show'])
+    ->middleware('auth')
+    ->name('attendance.show');
+
+Route::get('/attendance/{attendance}/edit', [AttendanceController::class, 'edit'])
+    ->middleware('auth')
+    ->name('attendance.edit');
+
+Route::post('/attendance/{attendance}/edit', [AttendanceController::class, 'update'])
+    ->middleware('auth')
+    ->name('attendance.update');

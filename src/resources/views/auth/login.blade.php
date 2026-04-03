@@ -1,28 +1,35 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>ログイン</title>
-</head>
-<body>
-    <h1>ログイン</h1>
+@extends('layouts.app')
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+@section('title', 'ログイン')
 
-        <div>
-            <label>メールアドレス</label>
-            <input type="email" name="email">
+@section('css')
+<link rel="stylesheet" href="{{ asset('css/login.css') }}">
+@endsection
+
+@section('content')
+<div class="login-page">
+    <div class="login-container">
+        <h1 class="login-title">ログイン</h1>
+
+        <form method="POST" action="{{ route('login') }}" class="login-form">
+            @csrf
+
+            <div class="form-group">
+                <label class="form-label">メールアドレス</label>
+                <input type="email" name="email" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">パスワード</label>
+                <input type="password" name="password" class="form-input">
+            </div>
+
+            <button type="submit" class="login-button">ログインする</button>
+        </form>
+
+        <div class="register-link-wrap">
+            <a href="{{ route('register') }}" class="register-link">会員登録はこちら</a>
         </div>
-
-        <div>
-            <label>パスワード</label>
-            <input type="password" name="password">
-        </div>
-
-        <button type="submit">ログイン</button>
-    </form>
-
-    <a href="{{ route('register') }}">会員登録</a>
-</body>
-</html>
+    </div>
+</div>
+@endsection

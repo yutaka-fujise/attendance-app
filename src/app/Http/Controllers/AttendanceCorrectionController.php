@@ -9,12 +9,19 @@ class AttendanceCorrectionController extends Controller
 {
     public function index()
     {
-        $corrections = AttendanceCorrection::with('attendance')
+        $pendingCorrections = AttendanceCorrection::with('attendance')
             ->where('user_id', Auth::id())
+            ->where('status', 'pending')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('attendance.corrections.index', compact('corrections'));
+        $approvedCorrections = AttendanceCorrection::with('attendance')
+            ->where('user_id', Auth::id())
+            ->where('status', 'approved')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('attendance.corrections.index', compact('pendingCorrections', 'approvedCorrections'));
     }
 
     public function show(AttendanceCorrection $correction)

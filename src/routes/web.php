@@ -5,6 +5,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceCorrectionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AdminCorrectionController;
 
 // トップ
 Route::get('/', function () {
@@ -28,28 +29,28 @@ Route::middleware('auth')->group(function () {
     Route::post('/attendance/break-start', [AttendanceController::class, 'breakStart'])->name('attendance.break_start');
     Route::post('/attendance/break-end', [AttendanceController::class, 'breakEnd'])->name('attendance.break_end');
     Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock_out');
+
+    Route::get('/attendance/list', [AttendanceController::class, 'list'])->name('attendance.list');
+
+    Route::get('/attendance/corrections', [AttendanceCorrectionController::class, 'index'])
+        ->name('attendance.corrections.index');
+
+    // 勤怠詳細 + 修正申請フォーム
+    Route::get('/attendance/{attendance}', [AttendanceController::class, 'show'])
+        ->name('attendance.show');
+
+    // 修正申請保存
+    Route::post('/attendance/{attendance}', [AttendanceController::class, 'update'])
+        ->name('attendance.update');
 });
 
-Route::get('/attendance/list', [AttendanceController::class, 'list'])
-    ->middleware('auth')
-    ->name('attendance.list');
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/corrections', [AdminCorrectionController::class, 'index'])
+        ->name('admin.corrections.index');
 
-Route::get('/attendance/corrections', [AttendanceCorrectionController::class, 'index'])
-    ->middleware('auth')
-    ->name('attendance.corrections.index');
+    Route::get('/corrections/{correction}', [AdminCorrectionController::class, 'show'])
+        ->name('admin.corrections.show');
 
-Route::get('/attendance/corrections/{correction}', [AttendanceCorrectionController::class, 'show'])
-    ->middleware('auth')
-    ->name('attendance.corrections.show');
-
-Route::get('/attendance/{attendance}', [AttendanceController::class, 'show'])
-    ->middleware('auth')
-    ->name('attendance.show');
-
-Route::get('/attendance/{attendance}/edit', [AttendanceController::class, 'edit'])
-    ->middleware('auth')
-    ->name('attendance.edit');
-
-Route::post('/attendance/{attendance}/edit', [AttendanceController::class, 'update'])
-    ->middleware('auth')
-    ->name('attendance.update');
+    Route::post('/corrections/{correction}/approve', [AdminCorrectionController::class, 'approve'])
+        ->name('admin.corrections.approve');
+});

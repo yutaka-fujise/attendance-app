@@ -135,18 +135,16 @@ class AttendanceController extends Controller
     public function list()
     {
         $user = auth()->user();
-        $now  = \Carbon\Carbon::now();
+        $now  = Carbon::now();
 
-        // 月の開始・終了
         $startOfMonth = $now->copy()->startOfMonth();
         $endOfMonth   = $now->copy()->endOfMonth();
 
-        // 今月の勤怠取得（休憩も一緒に）
-        $attendances = \App\Models\Attendance::with('breaks')
+        $attendances = Attendance::with('breaks')
             ->where('user_id', $user->id)
             ->whereBetween('date', [$startOfMonth, $endOfMonth])
             ->get()
-            ->keyBy('date'); // ←ここ重要🔥
+            ->keyBy('date');
 
         return view('attendance.list', compact(
             'now',
@@ -156,32 +154,36 @@ class AttendanceController extends Controller
         ));
     }
 
-    public function show(\App\Models\Attendance $attendance)
-    {
-        if ($attendance->user_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $attendance->load(['breaks', 'user']);
-
-        return view('attendance.show', compact('attendance'));
+    public function show(Attendance $attendance)
+{
+    if ($attendance->user_id !== auth()->id()) {
+        abort(403);
     }
 
-    public function edit(\App\Models\Attendance $attendance)
-    {
-        if ($attendance->user_id !== auth()->id()) {
-            abort(403);
-        }
+    $attendance->load(['breaks', 'user', 'corrections']);
 
-        $attendance->load(['breaks', 'user']);
+    $latestCorrection = $attendance->corrections()
+        ->where('user_id', auth()->id())
+        ->latest()
+        ->first();
 
-        return view('attendance.edit', compact('attendance'));
-    }
+    return view('attendance.show', compact('attendance', 'latestCorrection'));
+}
 
     public function update(Request $request, Attendance $attendance)
     {
         if ($attendance->user_id !== auth()->id()) {
             abort(403);
+        }
+
+        $hasCorrection = $attendance->corrections()
+            ->where('user_id', auth()->id())
+            ->exists();
+
+        if ($hasCorrection) {
+            return redirect()
+                ->route('attendance.show', $attendance->id)
+                ->with('message', '修正申請済みのため修正はできません。');
         }
 
         $request->validate([
@@ -190,7 +192,6 @@ class AttendanceController extends Controller
             'note'      => ['required'],
         ]);
 
-        // ① 申請作成
         $correction = AttendanceCorrection::create([
             'attendance_id' => $attendance->id,
             'user_id'       => auth()->id(),
@@ -200,11 +201,8 @@ class AttendanceController extends Controller
             'status'        => 'pending',
         ]);
 
-        // ② 休憩保存
         if ($request->has('breaks')) {
             foreach ($request->breaks as $break) {
-
-                // 空の行はスキップ
                 if (empty($break['break_start']) && empty($break['break_end'])) {
                     continue;
                 }

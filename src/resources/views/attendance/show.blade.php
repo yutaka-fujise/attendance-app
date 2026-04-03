@@ -1,57 +1,126 @@
-<h1>勤怠詳細</h1>
+@extends('layouts.app')
 
-<p>名前：{{ $attendance->user->name }}</p>
-<p>日付：{{ \Carbon\Carbon::parse($attendance->date)->format('Y年m月d日') }}</p>
-<p>出勤：{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}</p>
-<p>退勤：{{ $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '' }}</p>
+@section('title', '勤怠詳細')
 
+@section('content')
+<div class="attendance-detail-page">
+    <div class="attendance-detail-container">
+        <h1 class="attendance-detail-title">勤怠詳細</h1>
 
-@php
-    $totalBreak = 0;
+        @if (session('message'))
+            <div class="attendance-message">
+                {{ session('message') }}
+            </div>
+        @endif
 
-    foreach ($attendance->breaks as $break) {
-        if ($break->break_start && $break->break_end) {
-            $start = \Carbon\Carbon::parse($break->break_start);
-            $end = \Carbon\Carbon::parse($break->break_end);
-            $totalBreak += $end->diffInSeconds($start);
-        }
-    }
+        @php
+            $isLocked = $latestCorrection !== null;
+        @endphp
 
-    $hours = floor($totalBreak / 3600);
-    $minutes = floor(($totalBreak % 3600) / 60);
-@endphp
+        <form method="POST" action="{{ route('attendance.update', $attendance->id) }}" class="attendance-detail-form">
+            @csrf
 
-<p>休憩合計：{{ sprintf('%02d:%02d', $hours, $minutes) }}</p>
+            <div class="detail-table">
+                <div class="detail-row">
+                    <div class="detail-label">名前</div>
+                    <div class="detail-value">
+                        {{ $attendance->user->name }}
+                    </div>
+                </div>
 
-@php
-    if ($attendance->clock_in && $attendance->clock_out) {
-        $workSeconds =
-            \Carbon\Carbon::parse($attendance->clock_out)
-            ->diffInSeconds(\Carbon\Carbon::parse($attendance->clock_in))
-            - $totalBreak;
+                <div class="detail-row">
+                    <div class="detail-label">日付</div>
+                    <div class="detail-value detail-date-group">
+                        <span>{{ \Carbon\Carbon::parse($attendance->date)->format('Y年') }}</span>
+                        <span>{{ \Carbon\Carbon::parse($attendance->date)->format('n月j日') }}</span>
+                    </div>
+                </div>
 
-        $workHours = floor($workSeconds / 3600);
-        $workMinutes = floor(($workSeconds % 3600) / 60);
-    }
-@endphp
+                <div class="detail-row">
+                    <div class="detail-label">出勤・退勤</div>
+                    <div class="detail-value detail-time-group">
+                        <input
+                            type="time"
+                            name="clock_in"
+                            value="{{ old('clock_in', $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '') }}"
+                            class="time-input"
+                            {{ $isLocked ? 'disabled' : '' }}
+                        >
+                        <span class="time-separator">〜</span>
+                        <input
+                            type="time"
+                            name="clock_out"
+                            value="{{ old('clock_out', $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '') }}"
+                            class="time-input"
+                            {{ $isLocked ? 'disabled' : '' }}
+                        >
+                    </div>
+                    @error('clock_in')
+                        <p class="error-message">{{ $message }}</p>
+                    @enderror
+                    @error('clock_out')
+                        <p class="error-message">{{ $message }}</p>
+                    @enderror
+                </div>
 
-<p>
-勤務時間：
-{{ isset($workHours) ? sprintf('%02d:%02d', $workHours, $workMinutes) : '' }}
-</p>
-<p>備考：{{ $attendance->note ?? '' }}</p>
-<h2>休憩</h2>
+                @for ($i = 0; $i < 2; $i++)
+                    @php
+                        $break = $attendance->breaks[$i] ?? null;
+                    @endphp
 
-<table border="1">
-    <tr>
-        <th>休憩開始</th>
-        <th>休憩終了</th>
-    </tr>
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            {{ $i === 0 ? '休憩' : '休憩' . ($i + 1) }}
+                        </div>
+                        <div class="detail-value detail-time-group">
+                            <input
+                                type="time"
+                                name="breaks[{{ $i }}][break_start]"
+                                value="{{ old("breaks.$i.break_start", $break && $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '') }}"
+                                class="time-input"
+                                {{ $isLocked ? 'disabled' : '' }}
+                            >
+                            <span class="time-separator">〜</span>
+                            <input
+                                type="time"
+                                name="breaks[{{ $i }}][break_end]"
+                                value="{{ old("breaks.$i.break_end", $break && $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '') }}"
+                                class="time-input"
+                                {{ $isLocked ? 'disabled' : '' }}
+                            >
+                        </div>
+                    </div>
+                @endfor
 
-    @foreach ($attendance->breaks as $break)
-        <tr>
-            <td>{{ $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '' }}</td>
-            <td>{{ $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '' }}</td>
-        </tr>
-    @endforeach
-</table>
+                <div class="detail-row">
+                    <div class="detail-label">備考</div>
+                    <div class="detail-value">
+                        <textarea
+                            name="note"
+                            class="note-textarea"
+                            {{ $isLocked ? 'disabled' : '' }}
+                        >{{ old('note') }}</textarea>
+                    </div>
+                    @error('note')
+                        <p class="error-message">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            @if ($latestCorrection)
+                <div class="detail-message-area">
+                    @if ($latestCorrection->status === 'pending')
+                        <p class="pending-message">※申請済みのため修正できません。</p>
+                    @elseif ($latestCorrection->status === 'approved')
+                        <p class="pending-message">※承認済みのため修正できません。</p>
+                    @endif
+                </div>
+            @else
+                <div class="detail-button-area">
+                    <button type="submit" class="detail-submit-button">修正</button>
+                </div>
+            @endif
+        </form>
+    </div>
+</div>
+@endsection

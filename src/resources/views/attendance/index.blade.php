@@ -1,53 +1,51 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>勤怠打刻画面</title>
-</head>
-<body>
-    <a href="{{ route('attendance.list') }}">勤怠一覧</a>
+@extends('layouts.app')
 
-    <h1>勤怠打刻画面</h1>
+@section('title', '勤怠打刻画面')
 
-    @if (session('message'))
-        <p>{{ session('message') }}</p>
-    @endif
+@section('content')
+<div class="attendance-page">
+    <div class="attendance-content">
+        @if (session('message'))
+            <p class="attendance-message">{{ session('message') }}</p>
+        @endif
 
-    <p>日付：{{ $date }}</p>
-    <p>時刻：{{ $time }}</p>
-    <p>ステータス：{{ $status }}</p>
+        <div class="attendance-status-badge">
+            <span>{{ $status }}</span>
+        </div>
 
-    @if ($status === '勤務外')
-        <form method="POST" action="{{ route('attendance.clock_in') }}">
-            @csrf
-            <button type="submit">出勤</button>
-        </form>
-    @endif
+        <p class="attendance-date">{{ $date }}</p>
 
-    @if ($status === '出勤中')
-        <form method="POST" action="{{ route('attendance.break_start') }}">
-            @csrf
-            <button type="submit">休憩入</button>
-        </form>
-    @endif
+        <p class="attendance-time">{{ $time }}</p>
 
-    @if ($status === '休憩中')
-        <form method="POST" action="{{ route('attendance.break_end') }}">
-            @csrf
-            <button type="submit">休憩戻</button>
-        </form>
-    @endif
+        <div class="attendance-actions">
+            @if ($status === '勤務外')
+                <form method="POST" action="{{ route('attendance.clock_in') }}">
+                    @csrf
+                    <button type="submit">出勤</button>
+                </form>
+            @endif
 
-    @if ($status === '出勤中')
-        <form method="POST" action="{{ route('attendance.clock_out') }}">
-            @csrf
-            <button type="submit">退勤</button>
-        </form>
-    @endif
+            @if ($status === '出勤中')
+                <div class="attendance-action-row">
+                    <form method="POST" action="{{ route('attendance.break_start') }}">
+                        @csrf
+                        <button type="submit">休憩入</button>
+                    </form>
 
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit">ログアウト</button>
-    </form>
-</body>
-</html>
+                    <form method="POST" action="{{ route('attendance.clock_out') }}">
+                        @csrf
+                        <button type="submit">退勤</button>
+                    </form>
+                </div>
+            @endif
+
+            @if ($status === '休憩中')
+                <form method="POST" action="{{ route('attendance.break_end') }}">
+                    @csrf
+                    <button type="submit">休憩戻</button>
+                </form>
+            @endif
+        </div>
+    </div>
+</div>
+@endsection

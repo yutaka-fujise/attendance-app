@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AttendanceCorrectionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,6 +33,14 @@ Route::middleware('auth')->group(function () {
 Route::get('/attendance/list', [AttendanceController::class, 'list'])
     ->middleware('auth')
     ->name('attendance.list');
+
+Route::get('/attendance/corrections', [AttendanceCorrectionController::class, 'index'])
+    ->middleware('auth')
+    ->name('attendance.corrections.index');
+
+Route::get('/attendance/corrections/{correction}', [AttendanceCorrectionController::class, 'show'])
+    ->middleware('auth')
+    ->name('attendance.corrections.show');
 
 Route::get('/attendance/{attendance}', [AttendanceController::class, 'show'])
     ->middleware('auth')

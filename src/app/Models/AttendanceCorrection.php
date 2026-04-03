@@ -14,8 +14,19 @@ class AttendanceCorrection extends Model
         'note',
         'status',
     ];
-    public function breaks()
-{
-    return $this->hasMany(CorrectionBreak::class);
-}
+
+    public function attendance()
+    {
+        return $this->belongsTo(Attendance::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function correctionBreaks()
+    {
+        return $this->hasMany(CorrectionBreak::class);
+    }
 }

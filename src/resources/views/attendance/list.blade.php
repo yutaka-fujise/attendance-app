@@ -15,7 +15,7 @@
             </div>
 
             <div class="month-nav-current">
-                {{ $now->format('Y/m') }}
+                {{ $now->format('Y年/m月') }}
             </div>
 
             <div class="month-nav-next">

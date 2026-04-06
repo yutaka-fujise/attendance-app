@@ -55,9 +55,11 @@
                             {{ $isLocked ? 'disabled' : '' }}
                         >
                     </div>
+
                     @error('clock_in')
                         <p class="error-message">{{ $message }}</p>
                     @enderror
+
                     @error('clock_out')
                         <p class="error-message">{{ $message }}</p>
                     @enderror
@@ -72,6 +74,7 @@
                         <div class="detail-label">
                             {{ $i === 0 ? '休憩' : '休憩' . ($i + 1) }}
                         </div>
+
                         <div class="detail-value detail-time-group">
                             <input
                                 type="time"
@@ -89,6 +92,14 @@
                                 {{ $isLocked ? 'disabled' : '' }}
                             >
                         </div>
+
+                        @error("breaks.$i.break_start")
+                            <p class="error-message">{{ $message }}</p>
+                        @enderror
+
+                        @error("breaks.$i.break_end")
+                            <p class="error-message">{{ $message }}</p>
+                        @enderror
                     </div>
                 @endfor
 
@@ -101,6 +112,7 @@
                             {{ $isLocked ? 'disabled' : '' }}
                         >{{ old('note') }}</textarea>
                     </div>
+
                     @error('note')
                         <p class="error-message">{{ $message }}</p>
                     @enderror

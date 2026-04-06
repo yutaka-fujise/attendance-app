@@ -8,6 +8,7 @@ use App\Models\BreakTime;
 use App\Models\CorrectionBreak;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Http\Requests\AttendanceUpdateRequest;
 
 class AttendanceController extends Controller
 {
@@ -133,26 +134,29 @@ class AttendanceController extends Controller
     }
 
     public function list()
-    {
-        $user = auth()->user();
-        $now  = Carbon::now();
+{
+    $user = auth()->user();
 
-        $startOfMonth = $now->copy()->startOfMonth();
-        $endOfMonth   = $now->copy()->endOfMonth();
+    $now = request('month')
+        ? Carbon::parse(request('month'))
+        : Carbon::now();
 
-        $attendances = Attendance::with('breaks')
-            ->where('user_id', $user->id)
-            ->whereBetween('date', [$startOfMonth, $endOfMonth])
-            ->get()
-            ->keyBy('date');
+    $startOfMonth = $now->copy()->startOfMonth();
+    $endOfMonth   = $now->copy()->endOfMonth();
 
-        return view('attendance.list', compact(
-            'now',
-            'startOfMonth',
-            'endOfMonth',
-            'attendances'
-        ));
-    }
+    $attendances = Attendance::with('breaks')
+        ->where('user_id', $user->id)
+        ->whereBetween('date', [$startOfMonth, $endOfMonth])
+        ->get()
+        ->keyBy('date');
+
+    return view('attendance.list', compact(
+        'now',
+        'startOfMonth',
+        'endOfMonth',
+        'attendances'
+    ));
+}
 
     public function show(Attendance $attendance)
 {
@@ -170,53 +174,47 @@ class AttendanceController extends Controller
     return view('attendance.show', compact('attendance', 'latestCorrection'));
 }
 
-    public function update(Request $request, Attendance $attendance)
-    {
-        if ($attendance->user_id !== auth()->id()) {
-            abort(403);
-        }
+    public function update(AttendanceUpdateRequest $request, Attendance $attendance)
+{
+    if ($attendance->user_id !== auth()->id()) {
+        abort(403);
+    }
 
-        $hasCorrection = $attendance->corrections()
-            ->where('user_id', auth()->id())
-            ->exists();
+    $hasCorrection = $attendance->corrections()
+        ->where('user_id', auth()->id())
+        ->exists();
 
-        if ($hasCorrection) {
-            return redirect()
-                ->route('attendance.show', $attendance->id)
-                ->with('message', '修正申請済みのため修正はできません。');
-        }
-
-        $request->validate([
-            'clock_in'  => ['required'],
-            'clock_out' => ['required', 'after:clock_in'],
-            'note'      => ['required'],
-        ]);
-
-        $correction = AttendanceCorrection::create([
-            'attendance_id' => $attendance->id,
-            'user_id'       => auth()->id(),
-            'clock_in'      => $request->clock_in,
-            'clock_out'     => $request->clock_out,
-            'note'          => $request->note,
-            'status'        => 'pending',
-        ]);
-
-        if ($request->has('breaks')) {
-            foreach ($request->breaks as $break) {
-                if (empty($break['break_start']) && empty($break['break_end'])) {
-                    continue;
-                }
-
-                CorrectionBreak::create([
-                    'attendance_correction_id' => $correction->id,
-                    'break_start'              => $break['break_start'] ?? null,
-                    'break_end'                => $break['break_end'] ?? null,
-                ]);
-            }
-        }
-
+    if ($hasCorrection) {
         return redirect()
             ->route('attendance.show', $attendance->id)
-            ->with('message', '修正申請を送信しました');
+            ->with('message', '修正申請済みのため修正はできません。');
     }
+
+    $correction = AttendanceCorrection::create([
+        'attendance_id' => $attendance->id,
+        'user_id'       => auth()->id(),
+        'clock_in'      => $request->clock_in,
+        'clock_out'     => $request->clock_out,
+        'note'          => $request->note,
+        'status'        => 'pending',
+    ]);
+
+    if ($request->has('breaks')) {
+        foreach ($request->breaks as $break) {
+            if (empty($break['break_start']) && empty($break['break_end'])) {
+                continue;
+            }
+
+            CorrectionBreak::create([
+                'attendance_correction_id' => $correction->id,
+                'break_start'              => $break['break_start'] ?? null,
+                'break_end'                => $break['break_end'] ?? null,
+            ]);
+        }
+    }
+
+    return redirect()
+        ->route('attendance.show', $attendance->id)
+        ->with('message', '修正申請を送信しました');
+}
 }

@@ -13,11 +13,11 @@
         </div>
 
         <nav class="header-nav">
-            <a href="{{ route('attendance.index') }}">勤怠</a>
-            <a href="{{ route('attendance.list') }}">勤怠一覧</a>
-            <a href="{{ route('attendance.corrections.index') }}">申請</a>
+            <a href="{{ route('admin.attendances.index') }}">勤怠一覧</a>
+            <a href="#">スタッフ一覧</a>
+            <a href="{{ route('admin.corrections.index') }}">申請一覧</a>
 
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('admin.logout') }}">
                 @csrf
                 <button type="submit">ログアウト</button>
             </form>

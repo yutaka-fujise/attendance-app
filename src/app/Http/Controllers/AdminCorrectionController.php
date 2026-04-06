@@ -8,12 +8,20 @@ class AdminCorrectionController extends Controller
 {
     public function index()
     {
-        $corrections = AttendanceCorrection::with(['user', 'attendance'])
+        $pendingCorrections = AttendanceCorrection::with(['user', 'attendance'])
             ->where('status', 'pending')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('admin.corrections.index', compact('corrections'));
+        $approvedCorrections = AttendanceCorrection::with(['user', 'attendance'])
+            ->where('status', 'approved')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.corrections.index', compact(
+            'pendingCorrections',
+            'approvedCorrections'
+        ));
     }
 
     public function show(AttendanceCorrection $correction)

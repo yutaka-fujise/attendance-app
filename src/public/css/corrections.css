@@ -1,0 +1,124 @@
+/* ===============================
+  ページ全体
+=============================== */
+.correction-index-page {
+    background-color: #f3f3f3;
+    min-height: 100vh;
+    padding: 40px 0 80px;
+}
+
+/* ===============================
+  コンテナ
+=============================== */
+.correction-index-container {
+    width: 900px;
+    margin: 0 auto;
+}
+
+/* ===============================
+  タイトル
+=============================== */
+.correction-index-title {
+    font-size: 28px;
+    font-weight: 700;
+    padding-left: 16px;
+    border-left: 5px solid #000;
+    margin-bottom: 40px;
+}
+
+/* ===============================
+  タブ
+=============================== */
+.correction-index-tabs {
+    display: flex;
+    gap: 50px;
+    border-bottom: 1px solid #aaa;
+    margin-bottom: 30px;
+}
+
+.correction-index-tab {
+    padding: 10px 5px 12px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #777;
+    text-decoration: none;
+    position: relative;
+}
+
+/* アクティブ */
+.correction-index-tab.is-active {
+    color: #000;
+}
+
+/* 下線（選択中） */
+.correction-index-tab.is-active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 2px;
+    background-color: #000;
+}
+
+/* ===============================
+  テーブルラップ
+=============================== */
+.correction-index-table-wrap {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* ===============================
+  テーブル
+=============================== */
+.correction-index-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+/* ヘッダー */
+.correction-index-table th {
+    background-color: #fafafa;
+    color: #777;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 14px 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* ボディ */
+.correction-index-table td {
+    font-size: 14px;
+    color: #555;
+    font-weight: 600;
+    padding: 16px 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 中央揃え */
+.correction-index-table th,
+.correction-index-table td {
+    text-align: center;
+}
+
+/* ホバー */
+.correction-index-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* 詳細リンク */
+.correction-index-table td a {
+    color: #000;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+/* 空データ */
+.correction-index-empty {
+    padding: 30px 0;
+    color: #999;
+    font-size: 14px;
+}

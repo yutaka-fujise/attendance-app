@@ -55,7 +55,7 @@ class AdminCorrectionController extends Controller
         $correction->save();
 
         return redirect()
-            ->route('admin.corrections.index')
+            ->route('admin.corrections.show', $correction->id)
             ->with('success', '申請を承認しました');
     }
 }

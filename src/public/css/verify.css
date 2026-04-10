@@ -1,0 +1,58 @@
+/* =========================
+   Email Verification Page
+========================= */
+
+.page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 16px;
+}
+
+.verify {
+    display: grid;
+    justify-items: center;
+}
+
+.verify-box {
+    text-align: center;
+    margin-top: 80px;
+}
+
+.verify-message {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.8;
+    margin-bottom: 32px;
+    color: #222;
+}
+
+/* メインボタン */
+.verify-button-area {
+    margin-bottom: 20px;
+}
+
+.verify-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background: #e5e5e5;
+    border-radius: 6px;
+    font-weight: 900;
+    text-decoration: none;
+    color: #111;
+}
+
+/* 再送リンク */
+.verify-resend {
+    background: none;
+    border: none;
+    color: #2563eb;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 12px;
+}
+
+.verify-resend:hover {
+    text-decoration: underline;
+}

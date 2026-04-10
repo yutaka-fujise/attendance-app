@@ -1,0 +1,108 @@
+.admin-staff-list {
+    background-color: #f1f1f4;
+    min-height: 100vh;
+    padding: 48px 0 80px;
+}
+
+.admin-staff-list__inner {
+    width: 900px;
+    margin: 0 auto;
+}
+
+.admin-staff-list__heading {
+    margin: 0 0 48px;
+    padding-left: 18px;
+    border-left: 6px solid #000;
+    color: #000;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.admin-staff-list__table-wrap {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.admin-staff-list__table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    background-color: #fff;
+}
+
+.admin-staff-list__table th,
+.admin-staff-list__table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    color: #737373;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.admin-staff-list__table th {
+    background-color: #fff;
+}
+
+.admin-staff-list__table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-staff-list__table th:first-child,
+.admin-staff-list__table td:first-child {
+    width: 28%;
+}
+
+.admin-staff-list__table th:nth-child(2),
+.admin-staff-list__table td:nth-child(2) {
+    width: 50%;
+}
+
+.admin-staff-list__table th:last-child,
+.admin-staff-list__table td:last-child {
+    width: 22%;
+}
+
+.admin-staff-list__table a {
+    color: #000;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.admin-staff-list__table a:hover {
+    opacity: 0.8;
+}
+
+@media screen and (max-width: 1024px) {
+    .admin-staff-list__inner {
+        width: calc(100% - 32px);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .admin-staff-list {
+        padding: 32px 0 60px;
+    }
+
+    .admin-staff-list__heading {
+        margin-bottom: 32px;
+        font-size: 24px;
+    }
+
+    .admin-staff-list__table-wrap {
+        overflow-x: auto;
+    }
+
+    .admin-staff-list__table {
+        min-width: 720px;
+    }
+
+    .admin-staff-list__table th,
+    .admin-staff-list__table td {
+        padding: 14px 16px;
+        font-size: 14px;
+    }
+}

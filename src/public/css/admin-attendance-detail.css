@@ -1,0 +1,183 @@
+.admin-attendance-detail {
+    background-color: #f1f1f4;
+    min-height: 100vh;
+    padding: 48px 0 80px;
+}
+
+.admin-attendance-detail__inner {
+    width: 900px;
+    margin: 0 auto;
+}
+
+.admin-attendance-detail__heading {
+    margin: 0 0 48px;
+    padding-left: 18px;
+    border-left: 6px solid #000;
+    color: #000;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.admin-attendance-detail__errors {
+    margin-bottom: 24px;
+    color: #ff4d4f;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.admin-attendance-detail__errors ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.admin-attendance-detail__table {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.admin-attendance-detail__row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    align-items: center;
+    min-height: 92px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.admin-attendance-detail__row:last-child {
+    border-bottom: none;
+}
+
+.admin-attendance-detail__label {
+    padding: 0 40px;
+    color: #737373;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.admin-attendance-detail__value {
+    padding: 20px 40px;
+    color: #000;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.admin-attendance-detail__value--date {
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 120px;
+    /* ←これ追加がポイント */
+    gap: 60px;
+}
+
+.admin-attendance-detail__value--time-range {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.admin-attendance-detail__input {
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #000;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.admin-attendance-detail__input--time {
+    width: 110px;
+    height: 42px;
+    padding: 0 12px;
+    text-align: center;
+}
+
+.admin-attendance-detail__separator {
+    color: #000;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.admin-attendance-detail__textarea {
+    width: 100%;
+    max-width: 400px;
+    height: 90px;
+    padding: 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    resize: none;
+    font-size: 14px;
+    font-weight: 400;
+    color: #000;
+    background-color: #fff;
+}
+
+.admin-attendance-detail__button-wrap {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 40px;
+}
+
+.admin-attendance-detail__button {
+    min-width: 130px;
+    height: 50px;
+    border: none;
+    border-radius: 6px;
+    background-color: #000;
+    color: #fff;
+    font-size: 24px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.admin-attendance-detail__button:hover {
+    opacity: 0.85;
+}
+
+@media screen and (max-width: 1024px) {
+    .admin-attendance-detail__inner {
+        width: calc(100% - 32px);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .admin-attendance-detail {
+        padding: 32px 0 60px;
+    }
+
+    .admin-attendance-detail__heading {
+        margin-bottom: 32px;
+        font-size: 24px;
+    }
+
+    .admin-attendance-detail__row {
+        grid-template-columns: 1fr;
+        align-items: flex-start;
+        min-height: auto;
+        padding: 20px 0;
+    }
+
+    .admin-attendance-detail__label {
+        padding: 0 20px 12px;
+    }
+
+    .admin-attendance-detail__value {
+        padding: 0 20px;
+    }
+
+    .admin-attendance-detail__value--date,
+    .admin-attendance-detail__value--time-range {
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .admin-attendance-detail__textarea {
+        max-width: 100%;
+    }
+
+    .admin-attendance-detail__button {
+        width: 100%;
+        font-size: 20px;
+    }
+}

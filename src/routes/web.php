@@ -1,17 +1,19 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAttendanceController;
+use App\Http\Controllers\Admin\AdminStaffController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminCorrectionController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceCorrectionController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // トップ
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
 
 // 一般ユーザーログアウト
@@ -43,8 +45,35 @@ Route::post('/admin/logout', function (Request $request) {
     return redirect('/admin/login');
 })->name('admin.logout');
 
+
+// ==========================
+// メール認証関連（追加部分）
+// ==========================
+
+// 認証案内画面
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+// 認証処理
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return redirect('/attendance');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+// 再送
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+
+    return back()->with('status', 'verification-link-sent');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+
+// ==========================
 // 一般ユーザー機能
-Route::middleware('auth')->group(function () {
+// ==========================
+Route::middleware(['auth', 'verified'])->group(function () {
     // 勤怠打刻
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
     Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clock_in');
@@ -55,7 +84,7 @@ Route::middleware('auth')->group(function () {
     // 勤怠一覧
     Route::get('/attendance/list', [AttendanceController::class, 'list'])->name('attendance.list');
 
-    // 申請一覧
+    // 申請一覧（※順番重要）
     Route::get('/attendance/corrections', [AttendanceCorrectionController::class, 'index'])
         ->name('attendance.corrections.index');
 
@@ -68,8 +97,11 @@ Route::middleware('auth')->group(function () {
         ->name('attendance.update');
 });
 
+
+// ==========================
 // 管理者機能
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+// ==========================
+Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(function () {
     // 申請一覧
     Route::get('/corrections', [AdminCorrectionController::class, 'index'])
         ->name('admin.corrections.index');
@@ -93,4 +125,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     // 勤怠更新
     Route::put('/attendances/{attendance}', [AdminAttendanceController::class, 'update'])
         ->name('admin.attendances.update');
+
+    // スタッフ一覧
+    Route::get('/staff', [AdminStaffController::class, 'index'])
+        ->name('admin.staff.index');
+
+    // スタッフ別月次勤怠一覧
+    Route::get('/staff/{user}/attendances', [AdminAttendanceController::class, 'staffAttendances'])
+        ->name('admin.staff.attendances');
+
+    // CSV出力
+    Route::get('/staff/{user}/attendances/csv', [AdminAttendanceController::class, 'exportCsv'])
+        ->name('admin.staff.attendances.csv');
 });

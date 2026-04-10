@@ -65,3 +65,7 @@
     font-size: 20px;
     text-decoration: none;
 }
+
+.register-link:hover {
+    text-decoration: underline;
+}

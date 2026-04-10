@@ -1,0 +1,87 @@
+.attendance-page {
+    display: flex;
+    justify-content: center;
+    padding-top: 140px;
+}
+
+.attendance-content {
+    width: 100%;
+    max-width: 520px;
+    text-align: center;
+}
+
+.attendance-message {
+    margin-bottom: 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #d9534f;
+}
+
+.attendance-status-badge {
+    display: inline-block;
+    margin-bottom: 28px;
+    padding: 6px 18px;
+    background-color: #d9d9d9;
+    border-radius: 9999px;
+}
+
+.attendance-status-badge span {
+    font-size: 18px;
+    font-weight: bold;
+    color: #666;
+}
+
+.attendance-date {
+    margin: 0 0 20px;
+    font-size: 32px;
+    font-weight: 500;
+}
+
+.attendance-time {
+    margin: 0 0 48px;
+    font-size: 80px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.attendance-finish-message {
+    margin-top: 32px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+}
+
+.attendance-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.attendance-action-row {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+}
+
+.attendance-button {
+    min-width: 220px;
+    height: 64px;
+    padding: 0 24px;
+    background-color: #000;
+    color: #fff;
+    font-size: 32px;
+    font-weight: bold;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+}
+
+.attendance-button--sub {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #000;
+}
+
+.attendance-button:hover {
+    opacity: 0.85;
+}

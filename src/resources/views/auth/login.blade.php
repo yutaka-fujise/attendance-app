@@ -1,8 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.guest')
 
 @section('title', 'ログイン')
 
 @section('css')
+<link rel="stylesheet" href="{{ asset('css/sanitize.css') }}" />
 <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 @endsection
 
@@ -29,6 +30,10 @@
 
         <div class="register-link-wrap">
             <a href="{{ route('register') }}" class="register-link">会員登録はこちら</a>
+        </div>
+
+        <div class="register-link-wrap">
+            <a href="{{ route('admin.login') }}" class="register-link">管理者の方はこちら</a>
         </div>
     </div>
 </div>

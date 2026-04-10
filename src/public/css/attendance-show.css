@@ -1,0 +1,204 @@
+.attendance-detail-page {
+    background-color: #f3f3f3;
+    min-height: 100vh;
+    padding: 40px 0 80px;
+}
+
+.attendance-detail-container {
+    width: 680px;
+    margin: 0 auto;
+}
+
+.attendance-detail-title {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.5;
+    padding-left: 18px;
+    border-left: 6px solid #000;
+    margin-bottom: 50px;
+}
+
+.attendance-message {
+    margin-bottom: 20px;
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.attendance-detail-form {
+    width: 100%;
+}
+
+.detail-table {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.detail-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    align-items: center;
+    min-height: 74px;
+    border-bottom: 1px solid #e3e3e3;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-row-with-error {
+    align-items: start;
+    padding-top: 18px;
+    padding-bottom: 18px;
+}
+
+.detail-label {
+    padding: 0 36px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #666;
+}
+
+.detail-value {
+    padding: 0 36px 0 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #000;
+}
+
+.detail-date-group {
+    display: flex;
+    gap: 90px;
+    align-items: center;
+}
+
+.detail-time-group {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.time-input {
+    width: 120px;
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    color: #000;
+    box-sizing: border-box;
+}
+
+.time-input:disabled {
+    background-color: #fff;
+    color: #000;
+    opacity: 1;
+}
+
+.time-separator {
+    font-size: 20px;
+    font-weight: 700;
+    color: #000;
+}
+
+.note-textarea {
+    width: 360px;
+    min-height: 72px;
+    padding: 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    resize: none;
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+    box-sizing: border-box;
+}
+
+.note-textarea:disabled {
+    background-color: #fff;
+    color: #000;
+    opacity: 1;
+}
+
+.detail-error-area {
+    grid-column: 2 / 3;
+    padding: 8px 36px 0 0;
+}
+
+.error-message {
+    margin: 4px 0 0;
+    color: #ff4d4f;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.detail-button-area {
+    margin-top: 30px;
+    text-align: right;
+}
+
+.detail-submit-button {
+    min-width: 130px;
+    height: 50px;
+    padding: 0 24px;
+    border: none;
+    border-radius: 5px;
+    background-color: #000;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.detail-submit-button:hover {
+    opacity: 0.85;
+}
+
+.detail-message-area {
+    margin-top: 14px;
+    text-align: right;
+}
+
+.pending-message {
+    color: #ff6b6b;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+@media screen and (max-width: 768px) {
+    .attendance-detail-container {
+        width: calc(100% - 32px);
+    }
+
+    .detail-row {
+        grid-template-columns: 1fr;
+        padding: 16px 0;
+    }
+
+    .detail-label {
+        padding: 0 20px 10px;
+    }
+
+    .detail-value {
+        padding: 0 20px;
+    }
+
+    .detail-error-area {
+        grid-column: auto;
+        padding: 8px 20px 0;
+    }
+
+    .detail-date-group,
+    .detail-time-group {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .time-input,
+    .note-textarea {
+        width: 100%;
+    }
+}

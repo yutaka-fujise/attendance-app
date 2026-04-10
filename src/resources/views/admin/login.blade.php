@@ -1,8 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.guest')
 
 @section('title', 'ログイン')
 
 @section('css')
+<link rel="stylesheet" href="{{ asset('css/sanitize.css') }}" />
 <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 @endsection
 
@@ -26,6 +27,10 @@
 
             <button type="submit" class="login-button">ログインする</button>
         </form>
+
+        <div class="register-link-wrap">
+            <a href="/login" class="register-link">一般ユーザーの方はこちら</a>
+        </div>
     </div>
 </div>
 @endsection

@@ -1,9 +1,23 @@
 @extends('layouts.admin')
 
+@section('css')
+<link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
+<link rel="stylesheet" href="{{ asset('css/admin-attendance-detail.css') }}">
+@endsection
+
 @section('content')
 <div class="admin-attendance-detail">
     <div class="admin-attendance-detail__inner">
         <h2 class="admin-attendance-detail__heading">勤怠詳細</h2>
+        @if ($errors->any())
+    <div class="admin-attendance-detail__errors">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
         <form action="{{ route('admin.attendances.update', $attendance->id) }}" method="POST">
             @csrf

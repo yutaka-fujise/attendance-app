@@ -2,27 +2,50 @@
 
 @section('title', '勤怠一覧')
 
+@section('css')
+    <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/attendance-list.css') }}">
+@endsection
+
 @section('content')
 <div class="attendance-list-page">
     <div class="attendance-list-container">
         <h1 class="attendance-list-title">勤怠一覧</h1>
 
         <div class="attendance-list-month-nav">
-            <div class="month-nav-prev">
-                <a href="{{ route('attendance.list', ['month' => $now->copy()->subMonth()->format('Y-m')]) }}">
-                    ← 前月
-                </a>
-            </div>
+            <a
+                href="{{ route('attendance.list', ['month' => $currentMonth->copy()->subMonth()->format('Y-m')]) }}"
+                class="month-nav-link"
+            >
+                ← 前月
+            </a>
 
-            <div class="month-nav-current">
-                {{ $now->format('Y年/m月') }}
-            </div>
+            <form method="GET" action="{{ route('attendance.list') }}" class="month-picker-form">
+                <button
+                    type="button"
+                    class="month-picker-button"
+                    onclick="document.getElementById('month-picker').showPicker ? document.getElementById('month-picker').showPicker() : document.getElementById('month-picker').click()"
+                >
+                    <span class="month-picker-icon">📅</span>
+                    <span class="month-picker-text">{{ $currentMonth->format('Y/m') }}</span>
+                </button>
 
-            <div class="month-nav-next">
-                <a href="{{ route('attendance.list', ['month' => $now->copy()->addMonth()->format('Y-m')]) }}">
-                    翌月 →
-                </a>
-            </div>
+                <input
+                    type="month"
+                    id="month-picker"
+                    name="month"
+                    value="{{ $currentMonth->format('Y-m') }}"
+                    class="month-picker-input-hidden"
+                    onchange="this.form.submit()"
+                >
+            </form>
+
+            <a
+                href="{{ route('attendance.list', ['month' => $currentMonth->copy()->addMonth()->format('Y-m')]) }}"
+                class="month-nav-link"
+            >
+                翌月 →
+            </a>
         </div>
 
         <div class="attendance-list-table-wrap">
@@ -44,10 +67,11 @@
                             $attendance = $attendances[$date] ?? null;
                             $currentDate = $startOfMonth->copy()->day($day);
                             $weekday = ['日', '月', '火', '水', '木', '金', '土'][$currentDate->dayOfWeek];
+                            $totalBreak = 0;
                         @endphp
 
                         <tr>
-                            <td>
+                            <td class="attendance-list-date">
                                 {{ $currentDate->format('m/d') }}({{ $weekday }})
                             </td>
 
@@ -66,8 +90,6 @@
                             <td>
                                 @if ($attendance)
                                     @php
-                                        $totalBreak = 0;
-
                                         foreach ($attendance->breaks as $break) {
                                             if ($break->break_start && $break->break_end) {
                                                 $start = \Carbon\Carbon::parse($break->break_start);
@@ -102,7 +124,12 @@
 
                             <td>
                                 @if ($attendance)
-                                    <a href="{{ route('attendance.show', $attendance->id) }}">詳細</a>
+                                    <a
+                                        href="{{ route('attendance.show', $attendance->id) }}"
+                                        class="attendance-detail-link"
+                                    >
+                                        詳細
+                                    </a>
                                 @endif
                             </td>
                         </tr>

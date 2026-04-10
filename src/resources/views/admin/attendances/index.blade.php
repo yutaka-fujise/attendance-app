@@ -1,35 +1,62 @@
 @extends('layouts.admin')
 
+@section('title', '勤怠一覧')
+
+@section('css')
+<link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
+<link rel="stylesheet" href="{{ asset('css/admin-attendance-list.css') }}">
+@endsection
+
 @section('content')
-<div class="admin-attendance-list">
-    <div class="admin-attendance-list__inner">
+<div class="admin-attendance-list-page">
+    <div class="admin-attendance-list-container">
 
-        <h2 class="admin-attendance-list__heading">
+        <h1 class="admin-attendance-list-title">
             {{ \Carbon\Carbon::parse($date)->format('Y年n月j日') }}の勤怠
-        </h2>
+        </h1>
 
-        <div class="admin-attendance-list__date-nav">
+        <div class="admin-attendance-date-nav">
             <a
-                href="{{ route('admin.attendances.index', ['date' => \Carbon\Carbon::parse($date)->subDay()->toDateString()]) }}"
-                class="admin-attendance-list__date-link"
+                href="{{ route('admin.attendances.index', ['date' => \Carbon\Carbon::parse($date)->copy()->subDay()->toDateString()]) }}"
+                class="admin-attendance-date-nav__link admin-attendance-date-nav__link--prev"
             >
-                前日
+                <span class="admin-attendance-date-nav__arrow">←</span>
+                <span>前日</span>
             </a>
 
-            <div class="admin-attendance-list__date-current">
-                {{ \Carbon\Carbon::parse($date)->format('Y/m/d') }}
-            </div>
+            <form method="GET" action="{{ route('admin.attendances.index') }}" class="admin-attendance-date-picker-form">
+                <button
+                    type="button"
+                    class="admin-attendance-date-picker-button"
+                    onclick="document.getElementById('admin-date-picker').showPicker ? document.getElementById('admin-date-picker').showPicker() : document.getElementById('admin-date-picker').click()"
+                >
+                    <span class="admin-attendance-date-picker-button__icon">📅</span>
+                    <span class="admin-attendance-date-picker-button__text">
+                        {{ \Carbon\Carbon::parse($date)->format('Y/m/d') }}
+                    </span>
+                </button>
+
+                <input
+                    type="date"
+                    id="admin-date-picker"
+                    name="date"
+                    value="{{ \Carbon\Carbon::parse($date)->format('Y-m-d') }}"
+                    class="admin-attendance-date-picker-input-hidden"
+                    onchange="this.form.submit()"
+                >
+            </form>
 
             <a
-                href="{{ route('admin.attendances.index', ['date' => \Carbon\Carbon::parse($date)->addDay()->toDateString()]) }}"
-                class="admin-attendance-list__date-link"
+                href="{{ route('admin.attendances.index', ['date' => \Carbon\Carbon::parse($date)->copy()->addDay()->toDateString()]) }}"
+                class="admin-attendance-date-nav__link admin-attendance-date-nav__link--next"
             >
-                翌日
+                <span>翌日</span>
+                <span class="admin-attendance-date-nav__arrow">→</span>
             </a>
         </div>
 
-        <div class="admin-attendance-list__table-wrap">
-            <table class="admin-attendance-list__table">
+        <div class="admin-attendance-table-wrap">
+            <table class="admin-attendance-table">
                 <thead>
                     <tr>
                         <th>名前</th>
@@ -60,27 +87,15 @@
 
                         <tr>
                             <td>{{ $attendance->user->name }}</td>
-
-                            <td>
-                                {{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}
-                            </td>
-
-                            <td>
-                                {{ $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '' }}
-                            </td>
-
-                            <td>
-                                {{ sprintf('%d:%02d', floor($breakMinutes / 60), $breakMinutes % 60) }}
-                            </td>
-
-                            <td>
-                                {{ sprintf('%d:%02d', floor($workMinutes / 60), $workMinutes % 60) }}
-                            </td>
-
+                            <td>{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}</td>
+                            <td>{{ $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '' }}</td>
+                            <td>{{ sprintf('%d:%02d', floor($breakMinutes / 60), $breakMinutes % 60) }}</td>
+                            <td>{{ sprintf('%d:%02d', floor($workMinutes / 60), $workMinutes % 60) }}</td>
                             <td>
                                 <a
                                     href="{{ route('admin.attendances.show', $attendance->id) }}"
-                                    class="admin-attendance-list__detail-link">
+                                    class="admin-attendance-table__detail-link"
+                                >
                                     詳細
                                 </a>
                             </td>

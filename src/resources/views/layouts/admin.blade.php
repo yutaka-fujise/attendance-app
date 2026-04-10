@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'COACHTECH')</title>
+    <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/common.css') }}">
     @yield('css')
 </head>
@@ -14,12 +15,12 @@
 
         <nav class="header-nav">
             <a href="{{ route('admin.attendances.index') }}">勤怠一覧</a>
-            <a href="#">スタッフ一覧</a>
+            <a href="{{ route('admin.staff.index') }}">スタッフ一覧</a>
             <a href="{{ route('admin.corrections.index') }}">申請一覧</a>
 
             <form method="POST" action="{{ route('admin.logout') }}">
                 @csrf
-                <button type="submit">ログアウト</button>
+                <button type="submit" class="logout-button">ログアウト</button>
             </form>
         </nav>
     </header>

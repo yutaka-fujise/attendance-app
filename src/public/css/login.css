@@ -16,6 +16,15 @@
     margin: 0 0 60px;
 }
 
+.form-error-top {
+    color: #ff4b4b;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: -30px;
+    margin-bottom: 30px;
+}
+
 .login-form {
     text-align: left;
 }
@@ -40,6 +49,13 @@
     border-radius: 4px;
     box-sizing: border-box;
     background-color: #fff;
+}
+
+.form-error {
+    color: #ff4b4b;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 8px 0 0;
 }
 
 .login-button {

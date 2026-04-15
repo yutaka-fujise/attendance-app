@@ -9,10 +9,22 @@ class AdminAuthController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $credentials = $request->validate(
+            [
+                'email' => [
+                    'required',
+                    'email',
+                    'regex:/^[^@\s]+@[^@\s]+\.[^@\s]+$/',
+                ],
+                'password' => ['required'],
+            ],
+            [
+                'email.required' => 'メールアドレスを入力してください',
+                'email.email' => 'メールアドレスの形式で入力してください',
+                'email.regex' => 'メールアドレスの形式で入力してください',
+                'password.required' => 'パスワードを入力してください',
+            ]
+        );
 
         $credentials['role'] = 1;
 
@@ -22,8 +34,10 @@ class AdminAuthController extends Controller
             return redirect()->route('admin.attendances.index');
         }
 
-        return back()->withErrors([
-            'email' => '管理者アカウントとしてログインできませんでした。',
-        ])->onlyInput('email');
+        return back()
+            ->withErrors([
+                'email' => 'ログイン情報が登録されていません。',
+            ])
+            ->onlyInput('email');
     }
 }

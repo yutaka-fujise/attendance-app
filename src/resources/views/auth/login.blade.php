@@ -10,19 +10,44 @@
 @section('content')
 <div class="login-page">
     <div class="login-container">
+
         <h1 class="login-title">ログイン</h1>
 
-        <form method="POST" action="{{ route('login') }}" class="login-form">
+        {{-- ログイン失敗エラーだけ上に表示 --}}
+        @if ($errors->has('email') && str_contains($errors->first('email'), '登録されていません'))
+            <div class="form-error-top">
+                {{ $errors->first('email') }}
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('login') }}" class="login-form" novalidate>
             @csrf
 
             <div class="form-group">
                 <label class="form-label">メールアドレス</label>
-                <input type="email" name="email" class="form-input">
+                <input
+                    type="email"
+                    name="email"
+                    value="{{ old('email') }}"
+                    class="form-input"
+                >
+                @error('email')
+                    @if (!str_contains($message, '登録されていません'))
+                        <p class="form-error">{{ $message }}</p>
+                    @endif
+                @enderror
             </div>
 
             <div class="form-group">
                 <label class="form-label">パスワード</label>
-                <input type="password" name="password" class="form-input">
+                <input
+                    type="password"
+                    name="password"
+                    class="form-input"
+                >
+                @error('password')
+                    <p class="form-error">{{ $message }}</p>
+                @enderror
             </div>
 
             <button type="submit" class="login-button">ログインする</button>
@@ -35,6 +60,7 @@
         <div class="register-link-wrap">
             <a href="{{ route('admin.login') }}" class="register-link">管理者の方はこちら</a>
         </div>
+
     </div>
 </div>
 @endsection

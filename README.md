@@ -64,20 +64,12 @@ cp .env.example .env
 chmod 666 .env
 ```
 
-4. .env のデータベース設定を確認してください
-```env
-DB_HOST=mysql
-DB_PORT=3306
-DB_DATABASE=laravel_db
-DB_USERNAME=laravel_user
-DB_PASSWORD=laravel_pass
-```
-
-5. アプリケーションキー作成と権限設定
+4. アプリケーションキー作成と権限設定
 
 ```bash
 php artisan key:generate
 ```
+※データベース設定およびメール認証に必要な Mailhog の設定は .env.example に記載済みです。
 
 Laravelが書き込みを行うディレクトリの権限設定
 ```bash
@@ -85,17 +77,24 @@ chmod -R 777 storage bootstrap/cache
 ```
 
 
-6. マイグレーションとシーディングの実行
+5. マイグレーションとシーディングの実行
 
 ```bash
 php artisan migrate --seed
 ```
 
-7. シンボリックリンク作成
+6. シンボリックリンク作成
 
 ```bash
 php artisan storage:link
 ```
+
+## 管理者アカウント
+
+以下のアカウントで管理者ログインが可能です。
+
+- メールアドレス: admin@example.com
+- パスワード: password
 
 ## 使用技術（実行環境）
 
@@ -147,6 +146,9 @@ php artisan storage:link
 - ユーザー認証機能には Laravel Fortify を使用しています。
 
 - 一般ユーザーと管理者でログイン導線を分けています。
+
+- メール認証には Mailhog を使用しています。  
+  http://localhost:8025 で送信されたメールを確認できます。
 
 - 修正申請機能では、申請内容を別テーブルで管理し、承認後に勤怠データへ反映する構成としています。
 

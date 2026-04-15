@@ -40,43 +40,37 @@ class AdminAttendanceController extends Controller
             'note'      => $request->note,
         ]);
 
-        $breaks = $attendance->breaks()->orderBy('id')->get();
-
-        $breakData = [
-            [
-                'start' => $request->break1_start,
-                'end'   => $request->break1_end,
-            ],
-            [
-                'start' => $request->break2_start,
-                'end'   => $request->break2_end,
-            ],
-        ];
+        $existingBreaks = $attendance->breaks()->orderBy('id')->get();
+        $breakData = $request->breaks ?? [];
 
         foreach ($breakData as $index => $data) {
-            $existingBreak = $breaks[$index] ?? null;
+            $existingBreak = $existingBreaks[$index] ?? null;
 
-            $hasStart = !empty($data['start']);
-            $hasEnd   = !empty($data['end']);
+            $hasStart = !empty($data['break_start']);
+            $hasEnd   = !empty($data['break_end']);
 
             if ($hasStart && $hasEnd) {
                 if ($existingBreak) {
                     $existingBreak->update([
-                        'break_start' => $data['start'],
-                        'break_end'   => $data['end'],
+                        'break_start' => $data['break_start'],
+                        'break_end'   => $data['break_end'],
                     ]);
                 } else {
                     $attendance->breaks()->create([
-                        'break_start' => $data['start'],
-                        'break_end'   => $data['end'],
+                        'break_start' => $data['break_start'],
+                        'break_end'   => $data['break_end'],
                     ]);
                 }
             }
 
-            if (!$hasStart && !$hasEnd) {
-                if ($existingBreak) {
-                    $existingBreak->delete();
-                }
+            if (!$hasStart && !$hasEnd && $existingBreak) {
+                $existingBreak->delete();
+            }
+        }
+
+        if (count($existingBreaks) > count($breakData)) {
+            for ($i = count($breakData); $i < count($existingBreaks); $i++) {
+                $existingBreaks[$i]?->delete();
             }
         }
 

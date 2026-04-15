@@ -12,7 +12,7 @@
         <div class="register-container">
             <h1 class="register-title">会員登録</h1>
 
-            <form method="POST" action="{{ route('register') }}" class="register-form">
+            <form method="POST" action="{{ route('register') }}" class="register-form" novalidate>
                 @csrf
 
                 <div class="form-group">
@@ -64,6 +64,9 @@
                         name="password_confirmation"
                         class="form-input"
                     >
+                    @error('password_confirmation')
+                        <p class="form-error">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="register-button-area">

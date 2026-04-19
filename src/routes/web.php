@@ -84,9 +84,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 勤怠一覧
     Route::get('/attendance/list', [AttendanceController::class, 'list'])->name('attendance.list');
 
-    // 申請一覧（※順番重要）
+    // 申請一覧
     Route::get('/attendance/corrections', [AttendanceCorrectionController::class, 'index'])
         ->name('attendance.corrections.index');
+
+    // 申請詳細
+    Route::get('/attendance/corrections/{correction}', [AttendanceCorrectionController::class, 'show'])
+        ->name('attendance.corrections.show');
 
     // 勤怠詳細
     Route::get('/attendance/{attendance}', [AttendanceController::class, 'show'])

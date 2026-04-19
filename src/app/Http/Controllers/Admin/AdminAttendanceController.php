@@ -9,6 +9,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Models\AttendanceCorrection;
 
 class AdminAttendanceController extends Controller
 {
@@ -74,6 +75,12 @@ class AdminAttendanceController extends Controller
             }
         }
 
+        AttendanceCorrection::where('attendance_id', $attendance->id)
+            ->where('status', 'pending')
+            ->update([
+                'status' => 'approved',
+            ]);
+
         return redirect()->route('admin.attendances.index', [
             'date' => $attendance->date,
         ])->with('success', '勤怠を更新しました');
@@ -95,7 +102,12 @@ class AdminAttendanceController extends Controller
             });
 
         $days = [];
-        for ($date = $month->copy()->startOfMonth(); $date->lte($month->copy()->endOfMonth()); $date->addDay()) {
+
+        for (
+            $date = $month->copy()->startOfMonth();
+            $date->lte($month->copy()->endOfMonth());
+            $date->addDay()
+        ) {
             $days[] = [
                 'date'       => $date->copy(),
                 'attendance' => $attendances->get($date->toDateString()),
@@ -127,6 +139,7 @@ class AdminAttendanceController extends Controller
 
             foreach ($attendances as $attendance) {
                 $breakMinutes = 0;
+
                 foreach ($attendance->breaks as $break) {
                     if ($break->break_start && $break->break_end) {
                         $breakMinutes += Carbon::parse($break->break_start)
@@ -135,6 +148,7 @@ class AdminAttendanceController extends Controller
                 }
 
                 $workMinutes = 0;
+
                 if ($attendance->clock_in && $attendance->clock_out) {
                     $workMinutes = Carbon::parse($attendance->clock_in)
                         ->diffInMinutes(Carbon::parse($attendance->clock_out)) - $breakMinutes;
@@ -142,8 +156,12 @@ class AdminAttendanceController extends Controller
 
                 fputcsv($handle, [
                     Carbon::parse($attendance->date)->format('m/d'),
-                    $attendance->clock_in ? Carbon::parse($attendance->clock_in)->format('H:i') : '',
-                    $attendance->clock_out ? Carbon::parse($attendance->clock_out)->format('H:i') : '',
+                    $attendance->clock_in
+                        ? Carbon::parse($attendance->clock_in)->format('H:i')
+                        : '',
+                    $attendance->clock_out
+                        ? Carbon::parse($attendance->clock_out)->format('H:i')
+                        : '',
                     sprintf('%d:%02d', floor($breakMinutes / 60), $breakMinutes % 60),
                     sprintf('%d:%02d', floor($workMinutes / 60), $workMinutes % 60),
                 ]);
@@ -153,7 +171,10 @@ class AdminAttendanceController extends Controller
         });
 
         $response->headers->set('Content-Type', 'text/csv; charset=UTF-8');
-        $response->headers->set('Content-Disposition', 'attachment; filename="' . $fileName . '"');
+        $response->headers->set(
+            'Content-Disposition',
+            'attachment; filename="' . $fileName . '"'
+        );
 
         return $response;
     }

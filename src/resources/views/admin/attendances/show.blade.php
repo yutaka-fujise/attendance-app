@@ -7,8 +7,8 @@
 
 @section('content')
 @php
-    $break1 = $attendance->breaks[0] ?? null;
-    $break2 = $attendance->breaks[1] ?? null;
+    $oldBreaks = old('breaks', []);
+    $breakCount = max(count($attendance->breaks), count($oldBreaks), 2);
 @endphp
 
 <div class="admin-attendance-detail">
@@ -64,63 +64,42 @@
                     </div>
                 </div>
 
-                <div class="admin-attendance-detail__row">
-                    <div class="admin-attendance-detail__label">休憩</div>
-                    <div class="admin-attendance-detail__value admin-attendance-detail__value--time-group">
-                        <div class="admin-attendance-detail__time-range">
-                            <input
-                                type="time"
-                                name="breaks[0][break_start]"
-                                value="{{ old('breaks.0.break_start', $break1 && $break1->break_start ? \Carbon\Carbon::parse($break1->break_start)->format('H:i') : '') }}"
-                                class="admin-attendance-detail__input admin-attendance-detail__input--time"
-                            >
-                            <span class="admin-attendance-detail__separator">〜</span>
-                            <input
-                                type="time"
-                                name="breaks[0][break_end]"
-                                value="{{ old('breaks.0.break_end', $break1 && $break1->break_end ? \Carbon\Carbon::parse($break1->break_end)->format('H:i') : '') }}"
-                                class="admin-attendance-detail__input admin-attendance-detail__input--time"
-                            >
+                @for ($i = 0; $i < $breakCount; $i++)
+                    @php
+                        $break = $attendance->breaks[$i] ?? null;
+                    @endphp
+
+                    <div class="admin-attendance-detail__row">
+                        <div class="admin-attendance-detail__label">
+                            {{ $i === 0 ? '休憩' : '休憩' . ($i + 1) }}
                         </div>
+                        <div class="admin-attendance-detail__value admin-attendance-detail__value--time-group">
+                            <div class="admin-attendance-detail__time-range">
+                                <input
+                                    type="time"
+                                    name="breaks[{{ $i }}][break_start]"
+                                    value="{{ old("breaks.$i.break_start", $break && $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '') }}"
+                                    class="admin-attendance-detail__input admin-attendance-detail__input--time"
+                                >
+                                <span class="admin-attendance-detail__separator">〜</span>
+                                <input
+                                    type="time"
+                                    name="breaks[{{ $i }}][break_end]"
+                                    value="{{ old("breaks.$i.break_end", $break && $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '') }}"
+                                    class="admin-attendance-detail__input admin-attendance-detail__input--time"
+                                >
+                            </div>
 
-                        @error('breaks.0.break_start')
-                            <p class="admin-attendance-detail__error">{{ $message }}</p>
-                        @enderror
+                            @error("breaks.$i.break_start")
+                                <p class="admin-attendance-detail__error">{{ $message }}</p>
+                            @enderror
 
-                        @error('breaks.0.break_end')
-                            <p class="admin-attendance-detail__error">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="admin-attendance-detail__row">
-                    <div class="admin-attendance-detail__label">休憩2</div>
-                    <div class="admin-attendance-detail__value admin-attendance-detail__value--time-group">
-                        <div class="admin-attendance-detail__time-range">
-                            <input
-                                type="time"
-                                name="breaks[1][break_start]"
-                                value="{{ old('breaks.1.break_start', $break2 && $break2->break_start ? \Carbon\Carbon::parse($break2->break_start)->format('H:i') : '') }}"
-                                class="admin-attendance-detail__input admin-attendance-detail__input--time"
-                            >
-                            <span class="admin-attendance-detail__separator">〜</span>
-                            <input
-                                type="time"
-                                name="breaks[1][break_end]"
-                                value="{{ old('breaks.1.break_end', $break2 && $break2->break_end ? \Carbon\Carbon::parse($break2->break_end)->format('H:i') : '') }}"
-                                class="admin-attendance-detail__input admin-attendance-detail__input--time"
-                            >
+                            @error("breaks.$i.break_end")
+                                <p class="admin-attendance-detail__error">{{ $message }}</p>
+                            @enderror
                         </div>
-
-                        @error('breaks.1.break_start')
-                            <p class="admin-attendance-detail__error">{{ $message }}</p>
-                        @enderror
-
-                        @error('breaks.1.break_end')
-                            <p class="admin-attendance-detail__error">{{ $message }}</p>
-                        @enderror
                     </div>
-                </div>
+                @endfor
 
                 <div class="admin-attendance-detail__row">
                     <div class="admin-attendance-detail__label">備考</div>

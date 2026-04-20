@@ -48,6 +48,8 @@ class AttendanceUpdateRequest extends FormRequest
             $clockOut = $this->input('clock_out');
             $breaks = $this->input('breaks', []);
 
+            $validatedBreaks = [];
+
             foreach ($breaks as $index => $break) {
                 $breakStart = $break['break_start'] ?? null;
                 $breakEnd = $break['break_end'] ?? null;
@@ -83,6 +85,20 @@ class AttendanceUpdateRequest extends FormRequest
                     $validator->errors()->add($endKey, '休憩時間が勤務時間外です。');
                     continue;
                 }
+
+                foreach ($validatedBreaks as $validatedBreak) {
+                    if (
+                        $breakStart < $validatedBreak['end'] &&
+                        $breakEnd > $validatedBreak['start']
+                    ) {
+                        $validator->errors()->add($startKey, '休憩時間が重複しています。');
+                    }
+                }
+
+                $validatedBreaks[] = [
+                    'start' => $breakStart,
+                    'end' => $breakEnd,
+                ];
             }
         });
     }

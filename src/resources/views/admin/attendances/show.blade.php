@@ -6,9 +6,10 @@
 @endsection
 
 @section('content')
+
 @php
     $oldBreaks = old('breaks', []);
-    $breakCount = max(count($attendance->breaks), count($oldBreaks), 2);
+    $breakCount = max($attendance->breaks->count(), count($oldBreaks), 2);
 @endphp
 
 <div class="admin-attendance-detail">
@@ -66,7 +67,7 @@
 
                 @for ($i = 0; $i < $breakCount; $i++)
                     @php
-                        $break = $attendance->breaks[$i] ?? null;
+                        $break = $attendance->breaks->get($i);
                     @endphp
 
                     <div class="admin-attendance-detail__row">

@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AttendanceUpdateRequest;
 use App\Models\Attendance;
+use App\Models\AttendanceCorrection;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use App\Models\AttendanceCorrection;
 
 class AdminAttendanceController extends Controller
 {

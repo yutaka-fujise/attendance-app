@@ -8,11 +8,6 @@
 @endsection
 
 @section('content')
-@php
-    $break1 = $correction->correctionBreaks[0] ?? null;
-    $break2 = $correction->correctionBreaks[1] ?? null;
-@endphp
-
 <div class="admin-correction-show">
     <div class="admin-correction-show__inner">
         <h1 class="admin-correction-show__title">勤怠詳細</h1>
@@ -42,27 +37,18 @@
                 </div>
             </div>
 
-            <div class="admin-correction-show__row">
-                <div class="admin-correction-show__label">休憩</div>
-                <div class="admin-correction-show__value admin-correction-show__value--time-range">
-                    @if ($break1)
-                        <span>{{ \Carbon\Carbon::parse($break1->break_start)->format('H:i') }}</span>
+            @foreach ($correction->correctionBreaks as $index => $break)
+                <div class="admin-correction-show__row">
+                    <div class="admin-correction-show__label">
+                        {{ $index === 0 ? '休憩' : '休憩' . ($index + 1) }}
+                    </div>
+                    <div class="admin-correction-show__value admin-correction-show__value--time-range">
+                        <span>{{ \Carbon\Carbon::parse($break->break_start)->format('H:i') }}</span>
                         <span class="admin-correction-show__separator">〜</span>
-                        <span>{{ \Carbon\Carbon::parse($break1->break_end)->format('H:i') }}</span>
-                    @endif
+                        <span>{{ \Carbon\Carbon::parse($break->break_end)->format('H:i') }}</span>
+                    </div>
                 </div>
-            </div>
-
-            <div class="admin-correction-show__row">
-                <div class="admin-correction-show__label">休憩2</div>
-                <div class="admin-correction-show__value admin-correction-show__value--time-range">
-                    @if ($break2)
-                        <span>{{ \Carbon\Carbon::parse($break2->break_start)->format('H:i') }}</span>
-                        <span class="admin-correction-show__separator">〜</span>
-                        <span>{{ \Carbon\Carbon::parse($break2->break_end)->format('H:i') }}</span>
-                    @endif
-                </div>
-            </div>
+            @endforeach
 
             <div class="admin-correction-show__row">
                 <div class="admin-correction-show__label">備考</div>

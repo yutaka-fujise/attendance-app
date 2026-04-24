@@ -14,7 +14,7 @@
 
 <div class="admin-attendance-detail">
     <div class="admin-attendance-detail__inner">
-        <h2 class="admin-attendance-detail__heading">勤怠詳細</h2>
+        <h1 class="admin-attendance-detail__heading">勤怠詳細</h1>
 
         <form action="{{ route('admin.attendances.update', $attendance->id) }}" method="POST">
             @csrf

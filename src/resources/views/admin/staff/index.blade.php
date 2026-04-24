@@ -8,7 +8,7 @@
 @section('content')
 <div class="admin-staff-list">
     <div class="admin-staff-list__inner">
-        <h2 class="admin-staff-list__heading">スタッフ一覧</h2>
+        <h1 class="admin-staff-list__heading">スタッフ一覧</h1>
 
         <div class="admin-staff-list__table-wrap">
             <table class="admin-staff-list__table">
